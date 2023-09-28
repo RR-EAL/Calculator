@@ -8,4 +8,16 @@ https://learn.microsoft.com/en-us/visualstudio/get-started/csharp/tutorial-conso
 3 Tutorial: Extend C# console app and debug in Visual Studio (part 2 of 2)
 https://learn.microsoft.com/en-us/visualstudio/get-started/csharp/tutorial-console?view=vs-2022
 
-4 Traka Post voor aanmaken van een gebruiker
+4 Tutorial: recursief
+https://code-maze.com/csharp-basics-recursion/
+
+5 Zorg dat WebApiClient de successtekst kan ophalen in TodoApi.Controllers.TrakaController.CreateUser
+Google: uitzoeken hoe je een HttpPost moet doen met de HttpClient in dotnet
+
+6 Traka Post voor aanmaken van een gebruiker
+Traka Map: uitzoeken hoe TodoApi.Controllers.TrakaController.CreateUser er uitziet bij Traka en dit overnemen in de TodoApi
+
+7 Tutorial: oo programmeren
+https://www.w3schools.com/cs/cs_oop.php
+https://www.w3schools.com/cs/cs_classes.php
+https://www.w3schools.com/cs/cs_class_members.php
