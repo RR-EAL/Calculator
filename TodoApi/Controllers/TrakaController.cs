@@ -10,39 +10,19 @@ namespace TodoApi.Controllers
     [ApiController]
     public class TrakaController : ControllerBase
     {
-        [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] UserRequestModel model)
+
+        [HttpPost("User")]
+
+        public IActionResult CreateUser([FromBody] UserRequestModel model)
         {
             if (model == null)
             {
                 return BadRequest("Invalid request data");
             }
+            Console.WriteLine("User created successfully!");
 
-            // Serialize your model to JSON and create a StringContent with it
-            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-
-            // Send the POST request to your User endpoint
-            HttpResponseMessage response = await _httpClient.PostAsync("User", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Read the response content as a string
-                string responseContent = await response.Content.ReadAsStringAsync();
-
-                // Log the response to the console
-                Console.WriteLine($"User created successfully! Response: {responseContent}");
-
-                // Return a success response
-                return Ok(responseContent);
-            }
-            else
-            {
-                // Log the error status code
-                Console.WriteLine($"Error: {response.StatusCode}");
-
-                // Return an error response
-                return StatusCode((int)response.StatusCode, "Error occurred during user creation.");
-            }
+            // Return a success response
+            return Ok($"{model.Surname} created successfully!");
         }
 
         [HttpGet("Version")]
@@ -57,7 +37,19 @@ namespace TodoApi.Controllers
 
 public class UserRequestModel
 {
-    public string? FirstName { get; set; }
     [Required]
-    public string? LastName { get; set; }
+    public string? ForeignKey { get; set; }
+    [Required]
+    public string? Forename { get; set; }
+    [Required]
+    public string? Surname {  get; set; }
+    public int? CardId { get; set; }
+    public int? Pin {  get; set; }
+    public DateTime? PinExpiryDate { get; set; }
+    public Boolean? ActiveFlag { get; set; }
+    public DateTime? ActiveDate { get; set;} 
+    public DateTime? ExpiryDate { get; set; }
+    public string? Detail {  get; set; }
+
+
 }
