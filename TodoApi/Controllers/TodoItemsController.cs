@@ -55,6 +55,8 @@ namespace TodoApi.Controllers
             return "<string>2.20.4.0</string>";
         }
 
+ 
+
         // PUT: api/TodoItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -88,7 +90,7 @@ namespace TodoApi.Controllers
 
         // POST: api/TodoItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("Versionn")]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
           if (_context.TodoItem == null)
@@ -97,6 +99,7 @@ namespace TodoApi.Controllers
           }
             _context.TodoItem.Add(todoItem);
             await _context.SaveChangesAsync();
+            
 
             return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
         }
