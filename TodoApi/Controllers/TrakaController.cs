@@ -13,16 +13,22 @@ namespace TodoApi.Controllers
 
         [HttpPost("User")]
 
-        public IActionResult CreateUser([FromBody] UserRequestModel model)
+        public UserResponseModel? CreateUser([FromBody] UserRequestModel model)
         {
             if (model == null)
             {
-                return BadRequest("Invalid request data");
+                return null;
             }
             Console.WriteLine("User created successfully!");
 
             // Return a success response
-            return Ok($"{model.Surname} created successfully!");
+            return new UserResponseModel
+            {
+                ForeignKey = model.ForeignKey,
+                PrimaryKey = "Primary_Key",
+                Forename = model.Forename,
+                Surname = model.Surname,
+            };
         }
 
         [HttpGet("Version")]
@@ -52,4 +58,14 @@ public class UserRequestModel
     public string? Detail {  get; set; }
 
 
+}
+
+public class UserResponseModel
+{
+    public string? PrimaryKey { get; set; }
+    [Required]
+    public string? ForeignKey { get; set; }
+    [Required]
+    public string? Forename { get; set; }
+    public string? Surname { get; set; }
 }

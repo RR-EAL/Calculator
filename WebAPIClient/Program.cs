@@ -75,6 +75,6 @@ class Program
     static bool ServerCertificateCustomValidation(HttpRequestMessage requestMessage, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors sslErrors)
     {
         var result = sslErrors == SslPolicyErrors.None;
-        return result;
+        return true;
     }
 }
