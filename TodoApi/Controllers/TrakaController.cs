@@ -25,7 +25,7 @@ namespace TodoApi.Controllers
             return new UserResponseModel
             {
                 ForeignKey = model.ForeignKey,
-                PrimaryKey = "houi",
+                PrimaryKey = "Primary_Key",
                 Forename = model.Forename,
                 Surname = model.Surname,
             };
