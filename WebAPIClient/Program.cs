@@ -24,16 +24,16 @@ class Program
 
     // Prepare the request data if you have one (e.g., for a POST request)
     var requestData = new { 
-        ForeignKey = "value1",
-        Forename = "value2", 
-        Surname = "sdaf" ,
+        ForeignKey = "ForeignKey",
+        Forename = "Forename", 
+        Surname = "Surname",
         CardId = "1234", 
         Pin = "1234",
         PinExpire = DateTime.Now,
         ActiveFlag = true,
         ActiveDate = DateTime.Now,
         ExpiryDate = DateTime.Now,
-        Detail = "sdaf",
+        Detail = "Detail",
     };
         var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
 
