@@ -27,3 +27,5 @@ https://www.w3schools.com/cs/cs_class_members.php
 
 8 Tutorial: spelletje maken
 https://www.youtube.com/watch?v=jiKf-9MLm7Y
+
+9 TrakaConnection.cs invullen en uitzoeken welke aanroepen uit de TrakaMap we nodig hebben
