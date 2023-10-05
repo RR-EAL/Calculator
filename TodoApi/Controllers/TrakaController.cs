@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TodoApi.Models;
 
 namespace TodoApi.Controllers
 {
@@ -44,14 +45,58 @@ namespace TodoApi.Controllers
             return "<string>2.20.4.0</string>";
         }
 
-        [HttpGet("FindAll")]
-        public IActionResult FindAllAuthorisationsController()
+        /// <summary>
+        /// Fake implementatie van 3.7.1.1 RETURN A PAGED LIST OF USERS
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("User/page/{page}/pageSize/{pageSize}")]
+        public IActionResult FindAllUsers(int page, int pageSize)
         {
             try
             {
                 // Call the internal method to get the list of authorisations
                 var authorisationsList = FindAllAuthorisationsInternal();
-                return Ok(authorisationsList);
+                var skip = pageSize * page;
+
+                List<UserResponseModel> items = new();
+                foreach (string item in authorisationsList)
+                {
+
+                    if (item == null)
+                        continue;
+
+                    if (skip <= items.Count)
+                        continue;
+
+                    items.Add(new UserResponseModel
+                    {
+                        Surname = item,
+                        ForeignKey = item,
+                        PrimaryKey = item,
+                        Forename = "Joe",
+                    });
+
+                    if (items.Count >= pageSize)
+                        break;
+                }
+
+
+                //Mag ook zo (alleen c#)
+                //var its = authorisationsList
+                //    .Where(item => null != item)
+                //    .Skip(skip)
+                //    .Take(page)
+                //    .Select(item =>
+                //    new UserResponseModel
+                //    {
+                //        Surname = item,
+                //        ForeignKey = item,
+                //        PrimaryKey = item,
+                //        Forename = "Joe",
+                //    }
+                //);
+
+                return Ok(items);
             }
             catch (Exception ex)
             {
@@ -67,33 +112,8 @@ namespace TodoApi.Controllers
 }
 
 
-public class UserRequestModel
-{
-    [Required]
-    public string? ForeignKey { get; set; }
-    [Required]
-    public string? Forename { get; set; }
-    [Required]
-    public string? Surname {  get; set; }
-    public int? CardId { get; set; }
-    public int? Pin {  get; set; }
-    public DateTime? PinExpiryDate { get; set; }
-    public Boolean? ActiveFlag { get; set; }
-    public DateTime? ActiveDate { get; set;} 
-    public DateTime? ExpiryDate { get; set; }
-    public string? Detail {  get; set; }
 
 
-}
 
-public class UserResponseModel
-{
-    public string? PrimaryKey { get; set; }
-    [Required]
-    public string? ForeignKey { get; set; }
-    [Required]
-    public string? Forename { get; set; }
-    public string? Surname { get; set; }
-}
 
 

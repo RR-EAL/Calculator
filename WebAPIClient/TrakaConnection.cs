@@ -72,7 +72,7 @@ internal class TrakaConnection
     }
 
 
-    internal List<string> FindAllAuthorisations()
+    internal List<string> FindAllUsers()
     {
         return null;
         //return authorisations;

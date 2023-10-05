@@ -12,7 +12,7 @@
 
     internal void WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast()
     {
-        var autorisatiesInTraka = traka.FindAllAuthorisations();
+        var autorisatiesInTraka = traka.FindAllUsers();
 
         foreach (var autorisatie in atsData.SleutelAutorisaties)
         {
