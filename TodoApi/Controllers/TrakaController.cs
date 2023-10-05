@@ -10,6 +10,13 @@ namespace TodoApi.Controllers
     [ApiController]
     public class TrakaController : ControllerBase
     {
+        public List<string> authorisations = new List<string>
+        {
+            "Authorisation1",
+            "Authorisation2",
+            "Authorisation3",
+            "Authorisation4",
+        };
 
         [HttpPost("User")]
 
@@ -36,9 +43,28 @@ namespace TodoApi.Controllers
         {
             return "<string>2.20.4.0</string>";
         }
+
+        [HttpGet("FindAll")]
+        public IActionResult FindAllAuthorisationsController()
+        {
+            try
+            {
+                // Call the internal method to get the list of authorisations
+                var authorisationsList = FindAllAuthorisationsInternal();
+                return Ok(authorisationsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred: " + ex.Message);
+            }
+        }
+
+        internal List<string> FindAllAuthorisationsInternal()
+        {
+            return authorisations;
+        }
     }
 }
-
 
 
 public class UserRequestModel
@@ -69,3 +95,5 @@ public class UserResponseModel
     public string? Forename { get; set; }
     public string? Surname { get; set; }
 }
+
+

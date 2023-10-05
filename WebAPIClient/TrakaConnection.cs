@@ -1,4 +1,6 @@
-﻿using System.Net.Security;
+﻿using System.Net;
+using System.Net.Http;
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
@@ -7,12 +9,25 @@ using System.Text.Json;
 //Cabinet is een kast en een Fob is een sleutel positie
 internal class TrakaConnection
 {
+
+
+    private HttpClient httpClient;
+    private string apiUrl; // Replace with your API URL
+
+    internal TrakaConnection()
+    {
+        // Initialize the HttpClient and API URL
+        httpClient = new HttpClient();
+        apiUrl = "https://localhost:7252/Traka/FindAll"; // Replace with your actual API URL
+    }
+
+
     internal void Update(AtsSleutelAutorisatie record)
     {
         try
         {
             PostTrakaUser().GetAwaiter().GetResult();
-            PostTrakaAutorisatie();
+            //PostTrakaAutorisatie(record);
         }
         catch (Exception ex)
         {
@@ -20,14 +35,47 @@ internal class TrakaConnection
         }
     }
 
-    private void PostTrakaAutorisatie()
+    private async Task PostTrakaAutorisatie(AtsSleutelAutorisatie record)
     {
-        throw new NotImplementedException();
+        try
+        {
+            // Create a collection of key-value pairs for the form data
+            var formData = new List<KeyValuePair<string, string>>
+        {
+            new KeyValuePair<string, string>("key1", record.Achternaam), // Replace with your actual field names and values
+            new KeyValuePair<string, string>("key2", record.Voornaam),
+            new KeyValuePair<string, string>("key2", record.KastNummer),
+            new KeyValuePair<string, string>("key2", record.SleutelPositie)
+        };
+
+            // Create the form content
+            var formContent = new FormUrlEncodedContent(formData);
+
+            // Send an HTTP POST request to the API
+            HttpResponseMessage response = await httpClient.PostAsync(apiUrl, formContent);
+
+            // Check if the request was successful
+            if (response.IsSuccessStatusCode)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Post request successful. Response: " + responseContent);
+            }
+            else
+            {
+                Console.WriteLine("Post request failed. Status Code: " + response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
     }
+
 
     internal List<string> FindAllAuthorisations()
     {
-        throw new NotImplementedException();
+        return null;
+        //return authorisations;
     }
 
     internal void DeleteExpiredAutorisation(string ongeldig)

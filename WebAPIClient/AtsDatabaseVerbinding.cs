@@ -17,4 +17,6 @@ internal record AtsSleutelAutorisatie
     public string Voornaam { get; set; }
     public string KastNummer { get; set; }
     public string SleutelPositie { get; set; }
+    public DateTime ExpirationDate { get; internal set; }
+    public object Id { get; internal set; }
 }
