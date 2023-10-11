@@ -17,6 +17,7 @@ namespace TodoApi.Controllers
             "Authorisation2",
             "Authorisation3",
             "Authorisation4",
+            "Authorisation5",
         };
 
         [HttpPost("User")]
@@ -59,15 +60,14 @@ namespace TodoApi.Controllers
                 var skip = pageSize * page;
 
                 List<UserResponseModel> items = new();
-                foreach (string item in authorisationsList)
+                foreach (string item in authorisationsList.Skip(page - 1))
                 {
-
                     if (item == null)
                         continue;
 
-                    if (skip <= items.Count)
-                        continue;
-
+                    //if (skip <= item.Count())
+                    //    continue;
+                    
                     items.Add(new UserResponseModel
                     {
                         Surname = item,
@@ -79,22 +79,19 @@ namespace TodoApi.Controllers
                     if (items.Count >= pageSize)
                         break;
                 }
-
-
-                //Mag ook zo (alleen c#)
-                //var its = authorisationsList
-                //    .Where(item => null != item)
-                //    .Skip(skip)
-                //    .Take(page)
-                //    .Select(item =>
-                //    new UserResponseModel
-                //    {
-                //        Surname = item,
-                //        ForeignKey = item,
-                //        PrimaryKey = item,
-                //        Forename = "Joe",
-                //    }
-                //);
+/*                  var its = authorisationsList
+                      .Where(item => null != item)
+                      .Skip(skip)
+                      .Take(page)
+                      .Select(item =>
+                      new UserResponseModel
+                      {
+                          Surname = item,
+                          ForeignKey = item,
+                          PrimaryKey = item,
+                          Forename = "Joe",
+                      }
+                  );*/
 
                 return Ok(items);
             }
@@ -106,6 +103,7 @@ namespace TodoApi.Controllers
 
         internal List<string> FindAllAuthorisationsInternal()
         {
+            Console.WriteLine(authorisations);
             return authorisations;
         }
     }

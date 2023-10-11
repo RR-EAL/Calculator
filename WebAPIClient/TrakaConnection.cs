@@ -5,29 +5,31 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 
-
 //Cabinet is een kast en een Fob is een sleutel positie
-internal class TrakaConnection
+public class TrakaConnection
 {
-
-
     private HttpClient httpClient;
+    private AtsDatabaseVerbinding databaseVerbinding;
     private string apiUrl; // Replace with your API URL
+    private string postURL;
+
 
     internal TrakaConnection()
     {
         // Initialize the HttpClient and API URL
         httpClient = new HttpClient();
-        apiUrl = "https://localhost:7252/Traka/FindAll"; // Replace with your actual API URL
+        databaseVerbinding = new AtsDatabaseVerbinding();
+        apiUrl = "https://localhost:7252/Traka/User/page/1/pageSize/4";
+        postURL = "https://localhost:7252/Traka/User";
     }
 
 
-    internal void Update(AtsSleutelAutorisatie record)
+    internal async Task Update(AtsSleutelAutorisatie record)
     {
         try
         {
             PostTrakaUser().GetAwaiter().GetResult();
-            //PostTrakaAutorisatie(record);
+            await PostTrakaAutorisatie(record);
         }
         catch (Exception ex)
         {
@@ -45,14 +47,15 @@ internal class TrakaConnection
             new KeyValuePair<string, string>("key1", record.Achternaam), // Replace with your actual field names and values
             new KeyValuePair<string, string>("key2", record.Voornaam),
             new KeyValuePair<string, string>("key2", record.KastNummer),
-            new KeyValuePair<string, string>("key2", record.SleutelPositie)
+            new KeyValuePair<string, string>("key2", record.SleutelPositie),
+            new KeyValuePair<string, string>("key 3", record.ExpirationDate.ToString()),
         };
 
             // Create the form content
             var formContent = new FormUrlEncodedContent(formData);
 
             // Send an HTTP POST request to the API
-            HttpResponseMessage response = await httpClient.PostAsync(apiUrl, formContent);
+            HttpResponseMessage response = await httpClient.PostAsync(postURL, formContent);
 
             // Check if the request was successful
             if (response.IsSuccessStatusCode)
@@ -72,10 +75,19 @@ internal class TrakaConnection
     }
 
 
-    internal List<string> FindAllUsers()
+    public List<AtsSleutelAutorisatie> FindAllUsers()
     {
-        return null;
-        //return authorisations;
+        var authorisations = databaseVerbinding.SleutelAutorisaties.ToList();
+        return authorisations;
+    }
+
+    public async Task<string> GetListAsync()
+    {
+        HttpClient httpClient = new HttpClient();
+        using HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        //Console.WriteLine($"{jsonResponse}\n");
+        return jsonResponse;
     }
 
     internal void DeleteExpiredAutorisation(string ongeldig)

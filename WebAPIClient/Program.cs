@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -16,6 +17,10 @@ static class Program
         Console.ReadKey();
 
         UpdateAutorisaties();
+        NoemDitMaarWatJijWilt();
+        FindAllUsers();
+
+
 
         Console.WriteLine("Press any key to exit");
         Console.ReadKey();
@@ -27,5 +32,18 @@ static class Program
         ai.WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast();
     }
 
+    static async Task<string> NoemDitMaarWatJijWilt()
+    {
+        var x = new TrakaConnection();
+        var items = await x.GetListAsync();
+        Console.WriteLine(items);
+        return items;
+    }
 
+    static List<AtsSleutelAutorisatie> FindAllUsers()
+    {
+        var q = new TrakaConnection();
+        var tir = q.FindAllUsers();
+        return tir;
+    }
 }

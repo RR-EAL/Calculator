@@ -1,12 +1,9 @@
 ﻿internal class ChatGpt
 {
-    private List<AtsSleutelAutorisatie> authorizations;
-
-    private AtsDatabaseVerbinding atsData;
     private TrakaConnection traka;
+    private List<AtsSleutelAutorisatie> authorizations;
     public ChatGpt()
     {
-        atsData = new AtsDatabaseVerbinding();
         traka = new TrakaConnection();
     }
 
@@ -14,7 +11,7 @@
     {
         var autorisatiesInTraka = traka.FindAllUsers();
 
-        foreach (var autorisatie in atsData.SleutelAutorisaties)
+        foreach (var autorisatie in autorisatiesInTraka)
         {
             traka.Update(autorisatie);
             HouBijDatDeAutorisatieInTrakaNogGeldigIs();
@@ -33,6 +30,7 @@
 
     internal void HouBijDatDeAutorisatieInTrakaNogGeldigIs()
     {
+        authorizations = traka.FindAllUsers();
         try
         {
             // Iterate through the list of authorizations and check their validity
@@ -46,6 +44,7 @@
                     // For example, you can update its status, log the event, or take other actions
                     Console.WriteLine($"Authorization {authorization.Id} is no longer valid.");
                 }
+                //Console.WriteLine(authorization.ToString());
             }
 
             // You can add additional logic here as needed
@@ -58,6 +57,7 @@
     }
     private bool CheckAuthorizationValidity(AtsSleutelAutorisatie authorization)
     {
+        
         return DateTime.Now < authorization.ExpirationDate;
     }
 }

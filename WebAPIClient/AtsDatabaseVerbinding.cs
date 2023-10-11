@@ -6,12 +6,13 @@
 
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
-        new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10" },
-        new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14" },
+        new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "JNeroen", KastNummer="Kantine", SleutelPositie="A15" },
     };
 }
 
-internal record AtsSleutelAutorisatie
+public record AtsSleutelAutorisatie
 {
     public string Achternaam { get; set; }
     public string Voornaam { get; set; }
