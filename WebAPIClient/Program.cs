@@ -16,34 +16,15 @@ static class Program
         Console.WriteLine("Press any key as Swagger is started");
         Console.ReadKey();
 
-        UpdateAutorisaties();
-        NoemDitMaarWatJijWilt();
-        FindAllUsers();
-
-
+        await UpdateAutorisaties();
 
         Console.WriteLine("Press any key to exit");
         Console.ReadKey();
     }
 
-    static void UpdateAutorisaties()
+    static async Task UpdateAutorisaties()
     {
         var ai = new ChatGpt();
-        ai.WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast();
-    }
-
-    static async Task<string> NoemDitMaarWatJijWilt()
-    {
-        var x = new TrakaConnection();
-        var items = await x.GetListAsync();
-        Console.WriteLine(items);
-        return items;
-    }
-
-    static List<AtsSleutelAutorisatie> FindAllUsers()
-    {
-        var q = new TrakaConnection();
-        var tir = q.FindAllUsers();
-        return tir;
+        await ai.WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -9,18 +10,11 @@ using System.Text.Json;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    private AtsDatabaseVerbinding databaseVerbinding;
-    private string apiUrl; // Replace with your API URL
-    private string postURL;
-
 
     internal TrakaConnection()
     {
         // Initialize the HttpClient and API URL
         httpClient = new HttpClient();
-        databaseVerbinding = new AtsDatabaseVerbinding();
-        apiUrl = "https://localhost:7252/Traka/User/page/1/pageSize/4";
-        postURL = "https://localhost:7252/Traka/User";
     }
 
 
@@ -28,7 +22,11 @@ public class TrakaConnection
     {
         try
         {
-            PostTrakaUser().GetAwaiter().GetResult();
+            bool isNew = false;
+            if (isNew)
+            {
+                PostTrakaUser(record).GetAwaiter().GetResult();
+            }
             await PostTrakaAutorisatie(record);
         }
         catch (Exception ex)
@@ -55,7 +53,7 @@ public class TrakaConnection
             var formContent = new FormUrlEncodedContent(formData);
 
             // Send an HTTP POST request to the API
-            HttpResponseMessage response = await httpClient.PostAsync(postURL, formContent);
+            HttpResponseMessage response = await httpClient.PostAsync("https://localhost:7252/Traka/User", formContent);
 
             // Check if the request was successful
             if (response.IsSuccessStatusCode)
@@ -74,20 +72,15 @@ public class TrakaConnection
         }
     }
 
-
-    public List<AtsSleutelAutorisatie> FindAllUsers()
+    public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
     {
-        var authorisations = databaseVerbinding.SleutelAutorisaties.ToList();
-        return authorisations;
-    }
+        //HttpClient httpClient = new HttpClient();
+        //using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7252/Traka/User/page/{page}/pageSize/{pageSize}");
+        //return await response.Content.ReadFromJsonAsync<List<MyTrakaUser>>();
 
-    public async Task<string> GetListAsync()
-    {
-        HttpClient httpClient = new HttpClient();
-        using HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
-        var jsonResponse = await response.Content.ReadAsStringAsync();
+        string jsonData = "[{ 'achternaam': 'Rutgers' }, { 'achternaam': 'vd Hoek' }]";
         //Console.WriteLine($"{jsonResponse}\n");
-        return jsonResponse;
+        return JsonSerializer.Deserialize<List<MyTrakaUser>>(jsonData);
     }
 
     internal void DeleteExpiredAutorisation(string ongeldig)
@@ -95,7 +88,7 @@ public class TrakaConnection
         throw new NotImplementedException();
     }
 
-    private async Task PostTrakaUser()
+    private async Task PostTrakaUser(AtsSleutelAutorisatie record)
     {
         HttpClientHandler handler = new HttpClientHandler();
         handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
@@ -108,7 +101,7 @@ public class TrakaConnection
         {
             ForeignKey = "value1",
             Forename = "value2",
-            Surname = "sdaf",
+            Surname = record.Achternaam,
             CardId = "1234",
             Pin = "1234",
             PinExpire = DateTime.Now,
@@ -159,5 +152,14 @@ public class TrakaConnection
         return true;
     }
 
+    internal async Task DeleteUser(MyTrakaUser trakaUser)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public record MyTrakaUser
+    {
+        public string Achternaam { get; set; }
+    }
 
 }

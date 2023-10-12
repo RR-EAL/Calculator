@@ -1,20 +1,38 @@
 ﻿internal class ChatGpt
 {
     private TrakaConnection traka;
-    private List<AtsSleutelAutorisatie> authorizations;
+    private AtsDatabaseVerbinding atsVerbinding;
+
     public ChatGpt()
     {
         traka = new TrakaConnection();
+        atsVerbinding = new AtsDatabaseVerbinding();
     }
 
-    internal void WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast()
+    internal async Task WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast()
     {
-        var autorisatiesInTraka = traka.FindAllUsers();
+        var pageSize = 10;
+        var trakaUsers = await traka.GetListAsync(1, pageSize); //Ophalen van gebruikers in de sleutelkast
 
-        foreach (var autorisatie in autorisatiesInTraka)
+        foreach (var trakaUser in trakaUsers)
         {
-            traka.Update(autorisatie);
-            HouBijDatDeAutorisatieInTrakaNogGeldigIs();
+            Console.WriteLine("TrakaUser: " + trakaUser);
+
+            var atsAutorisatie = atsVerbinding.ZoekSleutelAutorisatieVoorUser(trakaUser.Achternaam);
+            Console.WriteLine("AtsAutorisatie gevonden: " + atsAutorisatie);
+
+            if (atsAutorisatie != null)
+            {
+                await traka.Update(atsAutorisatie); //Bestaande gebruikers uit bronlijst bijwerken in sleutelkast
+                Console.WriteLine("AtsAutorisatie bijgewerkt in Traka: " + atsAutorisatie);
+            }
+            else
+            {
+                await traka.DeleteUser(trakaUser); //Ontbrekende gebruikers uit bronlijst verwijderen uit sleutelkast
+                Console.WriteLine("AtsAutorisatie verwijderd uit Traka: " + atsAutorisatie);
+            }
+
+            //HouBijDatDeAutorisatieInTrakaNogGeldigIs();
         }
 
         var ongeldigeAurisaties = new List<string>();
@@ -26,38 +44,5 @@
                 traka.DeleteExpiredAutorisation(ongeldig);
             }
         }
-    }
-
-    internal void HouBijDatDeAutorisatieInTrakaNogGeldigIs()
-    {
-        authorizations = traka.FindAllUsers();
-        try
-        {
-            // Iterate through the list of authorizations and check their validity
-            foreach (var authorization in authorizations)
-            {
-                bool isValid = CheckAuthorizationValidity(authorization);
-
-                if (!isValid)
-                {
-                    // Handle the case where the authorization is no longer valid
-                    // For example, you can update its status, log the event, or take other actions
-                    Console.WriteLine($"Authorization {authorization.Id} is no longer valid.");
-                }
-                //Console.WriteLine(authorization.ToString());
-            }
-
-            // You can add additional logic here as needed
-        }
-        catch (Exception ex)
-        {
-            // Handle exceptions
-            Console.WriteLine("Error: " + ex.Message);
-        }
-    }
-    private bool CheckAuthorizationValidity(AtsSleutelAutorisatie authorization)
-    {
-        
-        return DateTime.Now < authorization.ExpirationDate;
     }
 }
