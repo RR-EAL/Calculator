@@ -27,6 +27,10 @@ public class TrakaConnection
             {
                 PostTrakaUser(record).GetAwaiter().GetResult();
             }
+            else
+            {
+                //Werk voornaam bij : map pagina??..
+            }
             await PostTrakaAutorisatie(record);
         }
         catch (Exception ex)
@@ -35,6 +39,7 @@ public class TrakaConnection
         }
     }
 
+    //Map pagina???...
     private async Task PostTrakaAutorisatie(AtsSleutelAutorisatie record)
     {
         try
@@ -88,6 +93,7 @@ public class TrakaConnection
         throw new NotImplementedException();
     }
 
+    //Map pagina
     private async Task PostTrakaUser(AtsSleutelAutorisatie record)
     {
         HttpClientHandler handler = new HttpClientHandler();
