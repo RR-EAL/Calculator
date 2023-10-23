@@ -6,18 +6,17 @@ internal class AtsDatabaseVerbinding
     {
     }
 
-    public AtsDatabaseVerbinding(List<AtsSleutelAutorisatie> sleutelAutorisaties)
-    {
-        SleutelAutorisaties = sleutelAutorisaties;
-    }
-
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
         new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
-        //new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A11", ExpirationDate = DateTime.Now.AddDays(7) },
         new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
         new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
     };
+
+    internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
+    {
+        return SleutelAutorisaties.Skip(page).Take(pageSize).ToList();
+    }
 
     internal AtsSleutelAutorisatie? ZoekSleutelAutorisatieVoorUser(string zoekWaarde)
     {
@@ -31,6 +30,8 @@ internal class AtsDatabaseVerbinding
                 // For example, you can update its status, log the event, or take other actions
                 Console.WriteLine($"Authorization {authorization.Id} is no longer valid.");
             }
+            //Console.WriteLine(authorization.ToString());
+
             if (authorization.Achternaam == zoekWaarde)
                 return authorization;
         }

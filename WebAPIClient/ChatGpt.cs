@@ -9,7 +9,18 @@
         atsVerbinding = new AtsDatabaseVerbinding();
     }
 
-    internal async Task WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast()
+    internal async Task StuurAutorisatiesVanAtsNaarTrakaSleutelkast()
+    {
+        var pageSize = 10;
+        var page = 1;
+        var pashouders = atsVerbinding.ZoekPashouders(page, pageSize);
+        foreach (var p in pashouders)
+        {
+            await traka.Update(p);
+        }
+    }
+
+    internal async Task OpschonenBestaandeAutorisatiesInTrakaSleutelkast()
     {
         var pageSize = 10;
         var trakaUsers = await traka.GetListAsync(1, pageSize); //Ophalen van gebruikers in de sleutelkast
@@ -47,5 +58,10 @@
                 traka.DeleteExpiredAutorisation(ongeldig);
             }
         }
+    }
+
+    internal async Task OphalenActueleSleutelStatus()
+    {
+        //dit komt later
     }
 }

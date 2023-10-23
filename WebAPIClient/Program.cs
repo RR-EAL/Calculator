@@ -25,6 +25,7 @@ static class Program
     static async Task UpdateAutorisaties()
     {
         var ai = new ChatGpt();
-        await ai.WerkAlleAutorisatiesInAts360BijInDeTrakaSleutelkast();
+        await ai.StuurAutorisatiesVanAtsNaarTrakaSleutelkast();
+        await ai.OpschonenBestaandeAutorisatiesInTrakaSleutelkast();
     }
 }
