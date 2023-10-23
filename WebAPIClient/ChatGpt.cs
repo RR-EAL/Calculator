@@ -16,20 +16,23 @@
 
         foreach (var trakaUser in trakaUsers)
         {
-            Console.WriteLine("TrakaUser: " + trakaUser);
 
-            var atsAutorisatie = atsVerbinding.ZoekSleutelAutorisatieVoorUser(trakaUser.Achternaam);
-            Console.WriteLine("AtsAutorisatie gevonden: " + atsAutorisatie);
+            var atsAutorisatie = atsVerbinding.ZoekSleutelAutorisatieVoorUser(trakaUser.surname);
+            Console.WriteLine("AtsAutorisatie gevonden: " + trakaUser);
 
             if (atsAutorisatie != null)
             {
                 await traka.Update(atsAutorisatie); //Bestaande gebruikers uit bronlijst bijwerken in sleutelkast
-                Console.WriteLine("AtsAutorisatie bijgewerkt in Traka: " + atsAutorisatie);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("AtsAutorisatie bijgewerkt in Traka");
+                Console.ResetColor();
             }
             else
             {
                 await traka.DeleteUser(trakaUser); //Ontbrekende gebruikers uit bronlijst verwijderen uit sleutelkast
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("AtsAutorisatie verwijderd uit Traka: " + atsAutorisatie);
+                Console.ResetColor();
             }
 
             //HouBijDatDeAutorisatieInTrakaNogGeldigIs();

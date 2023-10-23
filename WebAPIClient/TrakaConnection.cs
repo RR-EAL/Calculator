@@ -5,6 +5,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 //Cabinet is een kast en een Fob is een sleutel positie
 public class TrakaConnection
@@ -22,16 +23,16 @@ public class TrakaConnection
     {
         try
         {
-            bool isNew = false;
-            if (isNew)
+            bool isNotNew = await CheckIfAUserExists(record.Achternaam);
+            if (isNotNew)
             {
-                PostTrakaUser(record).GetAwaiter().GetResult();
             }
             else
             {
+                PostTrakaUser(record).GetAwaiter().GetResult();
                 //Werk voornaam bij : map pagina??..
             }
-            await PostTrakaAutorisatie(record);
+            await AssignNewSetOfPermissionsForSpecifiecUser(record);
         }
         catch (Exception ex)
         {
@@ -39,53 +40,81 @@ public class TrakaConnection
         }
     }
 
-    //Map pagina???...
-    private async Task PostTrakaAutorisatie(AtsSleutelAutorisatie record)
+    private async Task<bool> CheckIfAUserExists(string userKey)
     {
-        try
+        using HttpRequestMessage request = new(
+        HttpMethod.Head,
+        $"https://localhost:7252/Traka/User/foreignKey/{userKey}");
+
+        using HttpResponseMessage response = await httpClient.SendAsync(request);
+
+        response.EnsureSuccessStatusCode();
+        return true;
+    }
+
+    //Map pagina???...
+    private async Task AssignNewSetOfPermissionsForSpecifiecUser(AtsSleutelAutorisatie record)
+    {
+        var userKey = record.Achternaam;
+        HttpClientHandler handler = new HttpClientHandler();
+        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
+
+        HttpClient client = new HttpClient(handler);
+        client.DefaultRequestHeaders.Accept.Clear();
+
+        // Prepare the request data if you have one (e.g., for a POST request)
+        var requestData = new
         {
-            // Create a collection of key-value pairs for the form data
-            var formData = new List<KeyValuePair<string, string>>
-        {
-            new KeyValuePair<string, string>("key1", record.Achternaam), // Replace with your actual field names and values
-            new KeyValuePair<string, string>("key2", record.Voornaam),
-            new KeyValuePair<string, string>("key2", record.KastNummer),
-            new KeyValuePair<string, string>("key2", record.SleutelPositie),
-            new KeyValuePair<string, string>("key 3", record.ExpirationDate.ToString()),
+            ItemIds = new List<string> { record.SleutelPositie },
+            
         };
 
-            // Create the form content
-            var formContent = new FormUrlEncodedContent(formData);
+        var requestUrl = $"https://localhost:7252/Traka/User/foreignKey/{userKey}/ItemAccess";
+        var antwoord = client.PostAsJsonAsync(requestUrl, requestData);
+        
+        var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
 
-            // Send an HTTP POST request to the API
-            HttpResponseMessage response = await httpClient.PostAsync("https://localhost:7252/Traka/User", formContent);
+        // Create the HTTP request message
+        //try
+        //{
+        //    // Create a collection of key-value pairs for the form data
+        //    var formData = new List<KeyValuePair<string, string>>
+        //{
+        //    new KeyValuePair<string, string>("key1", record.Achternaam), // Replace with your actual field names and values
+        //    new KeyValuePair<string, string>("key2", record.Voornaam),
+        //    new KeyValuePair<string, string>("key2", record.KastNummer),
+        //    new KeyValuePair<string, string>("key2", record.SleutelPositie),
+        //    new KeyValuePair<string, string>("key 3", record.ExpirationDate.ToString()),
+        //};
 
-            // Check if the request was successful
-            if (response.IsSuccessStatusCode)
-            {
-                string responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("Post request successful. Response: " + responseContent);
-            }
-            else
-            {
-                Console.WriteLine("Post request failed. Status Code: " + response.StatusCode);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex.Message);
-        }
+        //    // Create the form content
+        //    var formContent = new FormUrlEncodedContent(formData);
+
+        //    // Send an HTTP POST request to the API
+        //    HttpResponseMessage response = await httpClient.PostAsync("https://localhost:7252/Traka/User", formContent);
+
+        //    // Check if the request was successful
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        string responseContent = await response.Content.ReadAsStringAsync();
+        //        Console.WriteLine("Post request successful. Response: " + responseContent);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Post request failed. Status Code: " + response.StatusCode);
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine("Error: " + ex.Message);
+        //}
     }
 
     public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
     {
-        //HttpClient httpClient = new HttpClient();
-        //using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7252/Traka/User/page/{page}/pageSize/{pageSize}");
-        //return await response.Content.ReadFromJsonAsync<List<MyTrakaUser>>();
-
-        string jsonData = "[{ 'achternaam': 'Rutgers' }, { 'achternaam': 'vd Hoek' }]";
-        //Console.WriteLine($"{jsonResponse}\n");
-        return JsonSerializer.Deserialize<List<MyTrakaUser>>(jsonData);
+        HttpClient httpClient = new HttpClient();
+        using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7252/Traka/User/page/{page}/pageSize/{pageSize}");
+        return await response.Content.ReadFromJsonAsync<List<MyTrakaUser>>();
     }
 
     internal void DeleteExpiredAutorisation(string ongeldig)
@@ -160,12 +189,41 @@ public class TrakaConnection
 
     internal async Task DeleteUser(MyTrakaUser trakaUser)
     {
-        //throw new NotImplementedException();
+        try
+        {
+            // Serialize the user object to JSON using System.Text.Json
+            var userJson = JsonSerializer.Serialize(trakaUser);
+
+            // Create a StringContent with JSON content
+            var content = new StringContent(userJson, Encoding.UTF8, "application/json");
+
+            // Send an HTTP DELETE request to the API
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "https://localhost:7252/Traka/User");
+            requestMessage.Content = content;
+
+            var response = await httpClient.SendAsync(requestMessage);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("User deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to delete the user. Server returned " + response.StatusCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
     }
+
+
 
     public record MyTrakaUser
     {
-        public string Achternaam { get; set; }
+        public string surname { get; set; }
+        public string Forename { get; set; }
     }
 
 }

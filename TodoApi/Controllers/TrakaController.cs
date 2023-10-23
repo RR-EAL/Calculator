@@ -1,9 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text;
+using System.Xml.Schema;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Newtonsoft.Json;
 using TodoApi.Models;
+
 
 namespace TodoApi.Controllers
 {
@@ -13,9 +17,9 @@ namespace TodoApi.Controllers
     {
         public List<string> authorisations = new List<string>
         {
-            "Authorisation1",
-            "Authorisation2",
-            "Authorisation3",
+            "van den Hoek",
+            "Rutgers",
+            "knaap",
             "Authorisation4",
             "Authorisation5",
         };
@@ -40,11 +44,84 @@ namespace TodoApi.Controllers
             };
         }
 
+
+
+        [HttpDelete("User/{userKey}/foreignKey")]
+
+        public IActionResult DeleteUser(string userKey,[FromBody] PermissionsSetModel model)
+        {
+            string auth = null;
+            foreach(var permission in  authorisations)
+                       {
+                if (permission == userKey)
+                {
+                    auth = permission;
+                }
+            }
+
+            if (auth == null)
+            {
+                return NotFound();
+            }
+
+            //opslaan model
+            return Ok();
+        }
+
+
+
+
+        [HttpPost("User/foreignKey/{userKey}/ItemAccess")]
+
+        public IActionResult AssignNewSetOfPermissionsForSpecifiecUser(string userKey,[FromBody] PermissionsSetModel model)
+        {
+            string auth = null;
+            foreach(var permission in authorisations)
+            {
+                if (permission == userKey)
+                {
+                    auth = permission;
+                }
+            }
+
+            if (auth == null)
+            {
+                return NotFound();
+            }
+
+            //opslaan model
+            return Ok();
+         
+        }
+
         [HttpGet("Version")]
         public string GetVersion()
         {
             return "<string>2.20.4.0</string>";
         }
+
+
+
+        [HttpHead("User/foreignKey/{userKey}")]
+
+        public IActionResult CheckIfAUserExists(string userKey)
+        {
+            foreach (var item in authorisations)
+            {
+                if (userKey == item)
+                {
+                    Console.WriteLine("user exits");
+                    return Ok();
+                }
+            }
+            Console.WriteLine($"user {userKey} not found");
+            return NotFound();
+
+
+        }
+
+
+
 
         /// <summary>
         /// Fake implementatie van 3.7.1.1 RETURN A PAGED LIST OF USERS
