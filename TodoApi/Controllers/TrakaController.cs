@@ -15,13 +15,12 @@ namespace TodoApi.Controllers
     [ApiController]
     public class TrakaController : ControllerBase
     {
-        public List<string> authorisations = new List<string>
+        public static List<string> authorisations = new List<string>
         {
             "van den Hoek",
             "Rutgers",
             "knaap",
-            "Authorisation4",
-            "Authorisation5",
+            "a",
         };
 
         [HttpPost("User")]
@@ -33,7 +32,7 @@ namespace TodoApi.Controllers
                 return null;
             }
             Console.WriteLine("User created successfully!");
-
+            authorisations.Add(model.ForeignKey);
             // Return a success response
             return new UserResponseModel
             {
@@ -64,6 +63,7 @@ namespace TodoApi.Controllers
                 return NotFound();
             }
 
+            authorisations.Remove(auth);
             //opslaan model
             return Ok();
         }

@@ -11,11 +11,12 @@ internal class AtsDatabaseVerbinding
         new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
         new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
         new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
+        new AtsSleutelAutorisatie { Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
     {
-        return SleutelAutorisaties.Skip(page).Take(pageSize).ToList();
+        return SleutelAutorisaties.ToList();//.Skip(page).Take(pageSize).ToList();
     }
 
     internal AtsSleutelAutorisatie? ZoekSleutelAutorisatieVoorUser(string zoekWaarde)

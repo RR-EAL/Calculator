@@ -29,7 +29,7 @@ public class TrakaConnection
             }
             else
             {
-                PostTrakaUser(record).GetAwaiter().GetResult();
+                await PostTrakaUser(record);
                 //Werk voornaam bij : map pagina??..
             }
             await AssignNewSetOfPermissionsForSpecifiecUser(record);
@@ -48,8 +48,7 @@ public class TrakaConnection
 
         using HttpResponseMessage response = await httpClient.SendAsync(request);
 
-        response.EnsureSuccessStatusCode();
-        return true;
+        return response.IsSuccessStatusCode;
     }
 
     //Map pagina???...
@@ -134,7 +133,7 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
-            ForeignKey = "value1",
+            ForeignKey = record.Achternaam,
             Forename = "value2",
             Surname = record.Achternaam,
             CardId = "1234",
@@ -198,7 +197,7 @@ public class TrakaConnection
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
             // Send an HTTP DELETE request to the API
-            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, "https://localhost:7252/Traka/User");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7252/Traka/User/{trakaUser.surname}/foreignKey");
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
