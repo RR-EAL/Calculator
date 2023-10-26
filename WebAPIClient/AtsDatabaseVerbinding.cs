@@ -8,10 +8,10 @@ internal class AtsDatabaseVerbinding
 
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
-        new AtsSleutelAutorisatie { Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
-        new AtsSleutelAutorisatie { Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
+        new AtsSleutelAutorisatie { ForeigKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { ForeigKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { ForeigKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
+        new AtsSleutelAutorisatie { ForeigKey = "X77", Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
@@ -53,5 +53,5 @@ public record AtsSleutelAutorisatie
     public string KastNummer { get; set; }
     public string SleutelPositie { get; set; }
     public DateTime ExpirationDate { get; internal set; }
-    public object Id { get; internal set; }
+    public string ForeigKey { get; internal set; }
 }

@@ -17,10 +17,8 @@ namespace TodoApi.Controllers
     {
         public static List<string> authorisations = new List<string>
         {
-            "van den Hoek",
-            "Rutgers",
-            "knaap",
-            "a",
+            "A88",
+            "Q55"
         };
 
         [HttpPost("User")]
@@ -47,11 +45,11 @@ namespace TodoApi.Controllers
 
         [HttpDelete("User/{userKey}/foreignKey")]
 
-        public IActionResult DeleteUser(string userKey,[FromBody] PermissionsSetModel model)
+        public IActionResult DeleteUser(string userKey, [FromBody] PermissionsSetModel model)
         {
             string auth = null;
-            foreach(var permission in  authorisations)
-                       {
+            foreach (var permission in authorisations)
+            {
                 if (permission == userKey)
                 {
                     auth = permission;
@@ -73,10 +71,10 @@ namespace TodoApi.Controllers
 
         [HttpPost("User/foreignKey/{userKey}/ItemAccess")]
 
-        public IActionResult AssignNewSetOfPermissionsForSpecifiecUser(string userKey,[FromBody] PermissionsSetModel model)
+        public IActionResult AssignNewSetOfPermissionsForSpecifiecUser(string userKey, [FromBody] PermissionsSetModel model)
         {
             string auth = null;
-            foreach(var permission in authorisations)
+            foreach (var permission in authorisations)
             {
                 if (permission == userKey)
                 {
@@ -91,7 +89,7 @@ namespace TodoApi.Controllers
 
             //opslaan model
             return Ok();
-         
+
         }
 
         [HttpGet("Version")]
@@ -144,7 +142,7 @@ namespace TodoApi.Controllers
 
                     //if (skip <= item.Count())
                     //    continue;
-                    
+
                     items.Add(new UserResponseModel
                     {
                         Surname = item,
@@ -156,19 +154,19 @@ namespace TodoApi.Controllers
                     if (items.Count >= pageSize)
                         break;
                 }
-/*                  var its = authorisationsList
-                      .Where(item => null != item)
-                      .Skip(skip)
-                      .Take(page)
-                      .Select(item =>
-                      new UserResponseModel
-                      {
-                          Surname = item,
-                          ForeignKey = item,
-                          PrimaryKey = item,
-                          Forename = "Joe",
-                      }
-                  );*/
+                /*                  var its = authorisationsList
+                                      .Where(item => null != item)
+                                      .Skip(skip)
+                                      .Take(page)
+                                      .Select(item =>
+                                      new UserResponseModel
+                                      {
+                                          Surname = item,
+                                          ForeignKey = item,
+                                          PrimaryKey = item,
+                                          Forename = "Joe",
+                                      }
+                                  );*/
 
                 return Ok(items);
             }
