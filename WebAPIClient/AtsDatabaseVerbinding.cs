@@ -8,10 +8,10 @@ internal class AtsDatabaseVerbinding
 
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
-        new AtsSleutelAutorisatie { ForeigKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { ForeigKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { ForeigKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
-        new AtsSleutelAutorisatie { ForeigKey = "X77", Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
+        new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
+        new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
+        new AtsSleutelAutorisatie { ForeignKey = "X77", Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
@@ -29,7 +29,7 @@ internal class AtsDatabaseVerbinding
             {
                 // Handle the case where the authorization is no longer valid
                 // For example, you can update its status, log the event, or take other actions
-                Console.WriteLine($"Authorization {authorization.Id} is no longer valid.");
+                Console.WriteLine($"Authorization {authorization.ForeignKey} is no longer valid.");
             }
             //Console.WriteLine(authorization.ToString());
 
@@ -53,5 +53,5 @@ public record AtsSleutelAutorisatie
     public string KastNummer { get; set; }
     public string SleutelPositie { get; set; }
     public DateTime ExpirationDate { get; internal set; }
-    public string ForeigKey { get; internal set; }
+    public string ForeignKey { get; internal set; }
 }

@@ -133,8 +133,8 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
-            ForeignKey = record.Achternaam,
-            Forename = "value2",
+            record.Voornaam,
+            record.ForeignKey,
             Surname = record.Achternaam,
             CardId = "1234",
             Pin = "1234",
