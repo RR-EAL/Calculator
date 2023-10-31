@@ -16,8 +16,13 @@ public class TrakaConnection
 
     internal TrakaConnection()
     {
+        HttpClientHandler handler = new HttpClientHandler();
+
+        // Set custom server validation callback
+        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
+
         // Initialize the HttpClient and API URL
-        httpClient = new HttpClient();
+        httpClient = new HttpClient(handler);
     }
 
 
@@ -78,8 +83,11 @@ public class TrakaConnection
 
     public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
     {
-        HttpClient httpClient = new HttpClient();
-        using HttpResponseMessage response = await httpClient.GetAsync($"https://localhost:7252/Traka/User/page/{page}/pageSize/{pageSize}");
+        HttpClientHandler handler = new HttpClientHandler();
+        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
+        HttpClient httpClient = new HttpClient(handler);
+
+        using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/User/page/{page}/pageSize/{pageSize}");
         return await response.Content.ReadFromJsonAsync<List<MyTrakaUser>>();
     }
 

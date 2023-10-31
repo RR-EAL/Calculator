@@ -26,7 +26,7 @@ static class Program
     {
         var ai = new ChatGpt();
         await ai.ControleerVersie();
-        await ai.StuurAutorisatiesVanAtsNaarTrakaSleutelkast();
+        //await ai.StuurAutorisatiesVanAtsNaarTrakaSleutelkast();
         await ai.OpschonenBestaandeAutorisatiesInTrakaSleutelkast();
         await ai.OphalenActueleSleutelStatus();
     }
