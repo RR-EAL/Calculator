@@ -64,4 +64,11 @@
     {
         //dit komt later
     }
+
+    internal async Task ControleerVersie()
+    {
+        if (traka.GeefVersie() != "")
+            throw new NotSupportedException("Traka versie onjuist");
+        //Todo
+    }
 }

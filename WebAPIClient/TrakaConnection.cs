@@ -11,6 +11,8 @@ using System.Text.Json.Serialization;
 public class TrakaConnection
 {
     private HttpClient httpClient;
+    //private string baseUrl = "https://eal-trakaweb:10700";
+    private string baseUrl = "https://localhost:7252";
 
     internal TrakaConnection()
     {
@@ -44,7 +46,7 @@ public class TrakaConnection
     {
         using HttpRequestMessage request = new(
         HttpMethod.Head,
-        $"https://localhost:7252/Traka/User/foreignKey/{userKey}");
+        $"{baseUrl}/Traka/User/foreignKey/{userKey}");
 
         using HttpResponseMessage response = await httpClient.SendAsync(request);
 
@@ -65,48 +67,13 @@ public class TrakaConnection
         var requestData = new
         {
             ItemIds = new List<string> { record.SleutelPositie },
-            
+
         };
 
-        var requestUrl = $"https://localhost:7252/Traka/User/foreignKey/{userKey}/ItemAccess";
+        var requestUrl = $"{baseUrl}/Traka/User/foreignKey/{userKey}/ItemAccess";
         var antwoord = client.PostAsJsonAsync(requestUrl, requestData);
-        
+
         var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
-
-        // Create the HTTP request message
-        //try
-        //{
-        //    // Create a collection of key-value pairs for the form data
-        //    var formData = new List<KeyValuePair<string, string>>
-        //{
-        //    new KeyValuePair<string, string>("key1", record.Achternaam), // Replace with your actual field names and values
-        //    new KeyValuePair<string, string>("key2", record.Voornaam),
-        //    new KeyValuePair<string, string>("key2", record.KastNummer),
-        //    new KeyValuePair<string, string>("key2", record.SleutelPositie),
-        //    new KeyValuePair<string, string>("key 3", record.ExpirationDate.ToString()),
-        //};
-
-        //    // Create the form content
-        //    var formContent = new FormUrlEncodedContent(formData);
-
-        //    // Send an HTTP POST request to the API
-        //    HttpResponseMessage response = await httpClient.PostAsync("https://localhost:7252/Traka/User", formContent);
-
-        //    // Check if the request was successful
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        string responseContent = await response.Content.ReadAsStringAsync();
-        //        Console.WriteLine("Post request successful. Response: " + responseContent);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("Post request failed. Status Code: " + response.StatusCode);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    Console.WriteLine("Error: " + ex.Message);
-        //}
     }
 
     public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
@@ -147,7 +114,7 @@ public class TrakaConnection
         var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
 
         // Create the HTTP request message
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7252/Traka/User");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User");
         request.Content = requestContent; // Set the request content
 
         request.Content.ReadAsStringAsync();
@@ -197,7 +164,7 @@ public class TrakaConnection
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
             // Send an HTTP DELETE request to the API
-            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7252/Traka/User/{trakaUser.surname}/foreignKey");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey");
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
@@ -217,7 +184,10 @@ public class TrakaConnection
         }
     }
 
-
+    internal string GeefVersie()
+    {
+        return "";
+    }
 
     public record MyTrakaUser
     {
