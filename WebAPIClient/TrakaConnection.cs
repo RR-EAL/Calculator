@@ -53,6 +53,8 @@ public class TrakaConnection
         HttpMethod.Head,
         $"{baseUrl}/Traka/User/foreignKey/{userKey}");
 
+
+
         using HttpResponseMessage response = await httpClient.SendAsync(request);
 
         return response.IsSuccessStatusCode;
@@ -135,7 +137,7 @@ public class TrakaConnection
         Console.WriteLine($"Content: {await request.Content.ReadAsStringAsync()}");
 
         // Send the HTTP request
-        HttpResponseMessage response = await client.SendAsync(request);
+        HttpResponseMessage response = await client.SendAsync(response);
 
         // Log the response details
         Console.WriteLine("Response:");
@@ -171,8 +173,11 @@ public class TrakaConnection
             // Create a StringContent with JSON content
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
+
+            var authParameter = Convert.ToBase64String(Encoding.UTF8.GetBytes("USER:PASSWORD"));
             // Send an HTTP DELETE request to the API
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey");
+            requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authParameter);
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
