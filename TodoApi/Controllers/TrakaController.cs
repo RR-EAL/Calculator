@@ -44,7 +44,7 @@ namespace TodoApi.Controllers
 
 
 
-        [HttpDelete("User/{userKey}/foreignKey")]
+        [HttpDelete("User/foreignKey/{userKey}")]
 
         public IActionResult DeleteUser(string userKey, [FromBody] PermissionsSetModel model)
         {

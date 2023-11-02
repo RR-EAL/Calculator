@@ -12,8 +12,8 @@ using WebAPIClient;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    //private string baseUrl = "https://eal-trakaweb:10700";
-    private string baseUrl = "https://localhost:7252";
+    private string baseUrl = "https://eal-trakaweb:10700";
+    //private string baseUrl = "https://localhost:7252";
 
     internal TrakaConnection()
     {
@@ -109,6 +109,7 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
+            
             record.Voornaam,
             record.ForeignKey,
             Surname = record.Achternaam,
@@ -173,7 +174,7 @@ public class TrakaConnection
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
             // Send an HTTP DELETE request to the API
-            string requestUrl = $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey/{trakaUser.ForeignKey}";
+            string requestUrl = $"{baseUrl}/Traka/User/foreignKey/{trakaUser.ForeignKey}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
             requestMessage.Content = content;
 
