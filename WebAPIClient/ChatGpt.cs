@@ -22,11 +22,13 @@
 
     internal async Task OpschonenBestaandeAutorisatiesInTrakaSleutelkast()
     {
-        var pageSize = 10;
+        var pageSize = 1000;
         var trakaUsers = await traka.GetListAsync(1, pageSize); //Ophalen van gebruikers in de sleutelkast
 
         foreach (var trakaUser in trakaUsers)
         {
+            if (trakaUser.IsAdmin())
+                continue;
 
             var atsAutorisatie = atsVerbinding.ZoekSleutelAutorisatieVoorUser(trakaUser.surname);
             Console.WriteLine("AtsAutorisatie gevonden: " + trakaUser);

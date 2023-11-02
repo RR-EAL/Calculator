@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebAPIClient;
 
 //Cabinet is een kast en een Fob is een sleutel positie
 public class TrakaConnection
@@ -16,13 +17,11 @@ public class TrakaConnection
 
     internal TrakaConnection()
     {
-        HttpClientHandler handler = new HttpClientHandler();
 
         // Set custom server validation callback
-        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
 
         // Initialize the HttpClient and API URL
-        httpClient = new HttpClient(handler);
+        httpClient = CreateClient();
     }
 
 
@@ -85,9 +84,7 @@ public class TrakaConnection
 
     public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
     {
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
-        HttpClient httpClient = new HttpClient(handler);
+        var httpClient = CreateClient();
 
         using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/User/page/{page}/pageSize/{pageSize}");
         return await response.Content.ReadFromJsonAsync<List<MyTrakaUser>>();
@@ -98,14 +95,16 @@ public class TrakaConnection
         throw new NotImplementedException();
     }
 
+    private HttpClient CreateClient()
+    {
+        return new HttpClient(Program.RequestHandlerForTraka);
+    }
+
     //Map pagina
     private async Task PostTrakaUser(AtsSleutelAutorisatie record)
     {
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
-
-        HttpClient client = new HttpClient(handler);
-        client.DefaultRequestHeaders.Accept.Clear();
+        var client = CreateClient();
+        //client.DefaultRequestHeaders.Accept.Clear();
 
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
@@ -137,7 +136,7 @@ public class TrakaConnection
         Console.WriteLine($"Content: {await request.Content.ReadAsStringAsync()}");
 
         // Send the HTTP request
-        HttpResponseMessage response = await client.SendAsync(response);
+        HttpResponseMessage response = await client.SendAsync(request);
 
         // Log the response details
         Console.WriteLine("Response:");
@@ -173,11 +172,8 @@ public class TrakaConnection
             // Create a StringContent with JSON content
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
-
-            var authParameter = Convert.ToBase64String(Encoding.UTF8.GetBytes("USER:PASSWORD"));
             // Send an HTTP DELETE request to the API
-            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey");
-            requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authParameter);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{baseUrl}/Traka/User/{trakaUser.ForeignKey}/foreignKey");
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
@@ -204,8 +200,14 @@ public class TrakaConnection
 
     public record MyTrakaUser
     {
+        public string ForeignKey { get; set; }
         public string surname { get; set; }
         public string Forename { get; set; }
+
+        internal bool IsAdmin()
+        {
+            return string.IsNullOrWhiteSpace(ForeignKey);
+        }
     }
 
 }

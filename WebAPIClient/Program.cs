@@ -8,9 +8,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using WebAPIClient;
 
 static class Program
 {
+    public static TrakaRequestHandler RequestHandlerForTraka { get; } = new TrakaRequestHandler();
+
     static async Task Main()
     {
         Console.WriteLine("Press any key as Swagger is started");
