@@ -8,10 +8,10 @@ internal class AtsDatabaseVerbinding
 
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
-        new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
-        new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
-        new AtsSleutelAutorisatie { ForeignKey = "X77", Achternaam = "sjaak", Voornaam = "henk", KastNummer="Kantine", SleutelPositie="A12" },
+        //new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
+        //new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
+        //new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
+        new AtsSleutelAutorisatie { ForeignKey = "X79", Achternaam = "sjaak2", Voornaam = "henk2", KastNummer="Kantine", SleutelPositie="A12", Pasnummer = 267 },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
@@ -54,4 +54,5 @@ public record AtsSleutelAutorisatie
     public string SleutelPositie { get; set; }
     public DateTime ExpirationDate { get; internal set; }
     public string ForeignKey { get; internal set; }
+    public int Pasnummer { get; internal set; }
 }
