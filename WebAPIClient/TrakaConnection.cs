@@ -173,7 +173,8 @@ public class TrakaConnection
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
             // Send an HTTP DELETE request to the API
-            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, $"{baseUrl}/Traka/User/{trakaUser.ForeignKey}/foreignKey");
+            string requestUrl = $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey/{trakaUser.ForeignKey}";
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
             requestMessage.Content = content;
 
             var response = await httpClient.SendAsync(requestMessage);
