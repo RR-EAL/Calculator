@@ -73,4 +73,14 @@
             throw new NotSupportedException("Traka versie onjuist");
         //Todo
     }
+
+    internal async Task LaatAlleAutorisatiesInTrakaZien()
+    {
+        foreach(var x in await traka.GetListAsync(1, 1000))
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(x);
+            Console.ResetColor();
+        }
+    }
 }

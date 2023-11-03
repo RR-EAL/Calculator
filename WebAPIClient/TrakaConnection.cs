@@ -12,8 +12,8 @@ using WebAPIClient;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    //private string baseUrl = "https://eal-trakaweb:10700";
-    private string baseUrl = "https://localhost:7252";
+    private string baseUrl = "https://eal-trakaweb:10700";
+    //private string baseUrl = "https://localhost:7252";
 
     internal TrakaConnection()
     {
@@ -29,7 +29,7 @@ public class TrakaConnection
     {
         try
         {
-            bool isNotNew = await CheckIfAUserExists(record.Achternaam);
+            bool isNotNew = await CheckIfAUserExists(record.ForeignKey);
             if (isNotNew)
             {
             }
@@ -62,12 +62,9 @@ public class TrakaConnection
     //Map pagina???...
     private async Task AssignNewSetOfPermissionsForSpecifiecUser(AtsSleutelAutorisatie record)
     {
-        var userKey = record.Achternaam;
-        HttpClientHandler handler = new HttpClientHandler();
-        handler.ServerCertificateCustomValidationCallback = ServerCertificateCustomValidation;
+        var userKey = record.ForeignKey;
 
-        HttpClient client = new HttpClient(handler);
-        client.DefaultRequestHeaders.Accept.Clear();
+        HttpClient client = CreateClient();
 
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
@@ -77,9 +74,11 @@ public class TrakaConnection
         };
 
         var requestUrl = $"{baseUrl}/Traka/User/foreignKey/{userKey}/ItemAccess";
-        var antwoord = client.PostAsJsonAsync(requestUrl, requestData);
+        var antwoord = await client.PostAsJsonAsync(requestUrl, requestData);
 
-        var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+        antwoord.EnsureSuccessStatusCode();
+
+        //var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
     }
 
     public async Task<List<MyTrakaUser>> GetListAsync(int page, int pageSize)
@@ -109,11 +108,12 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
-            record.Voornaam,
+            
+            Forename = record.Voornaam,
             record.ForeignKey,
             Surname = record.Achternaam,
-            CardId = "1234",
-            Pin = "1234",
+            CardId = record.Pasnummer,
+            //Pin = ",
             PinExpire = DateTime.Now,
             ActiveFlag = true,
             ActiveDate = DateTime.Now,
@@ -173,9 +173,10 @@ public class TrakaConnection
             var content = new StringContent(userJson, Encoding.UTF8, "application/json");
 
             // Send an HTTP DELETE request to the API
-            string requestUrl = $"{baseUrl}/Traka/User/{trakaUser.surname}/foreignKey/{trakaUser.ForeignKey}";
+            string requestUrl = $"{baseUrl}/Traka/User/foreignKey/{trakaUser.ForeignKey}";
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
             requestMessage.Content = content;
+            return;
 
             var response = await httpClient.SendAsync(requestMessage);
 
