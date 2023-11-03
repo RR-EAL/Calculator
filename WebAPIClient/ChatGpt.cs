@@ -69,7 +69,7 @@
 
     internal async Task ControleerVersie()
     {
-        if (traka.GeefVersie() != "")
+        if (traka.GeefVersie() != "2.7.12.0")
             throw new NotSupportedException("Traka versie onjuist");
         //Todo
     }

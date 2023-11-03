@@ -32,6 +32,7 @@ public class TrakaConnection
             bool isNotNew = await CheckIfAUserExists(record.ForeignKey);
             if (isNotNew)
             {
+                // update pagina 95;
             }
             else
             {
