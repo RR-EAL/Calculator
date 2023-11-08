@@ -95,19 +95,12 @@ namespace TodoApi.Controllers
 
 
 
-        private string rVersion = "2.7.12.0";
+        private string Version = "2.7.12.0";
 
         [HttpGet("Version")] 
-        public IActionResult CheckVersion(string input)
+        public IActionResult GetVersion()
         {
-            if (input == rVersion)
-            {
-                return Ok("Versions match!");
-            }
-            else
-            {
-                return BadRequest("Version does not match!");
-            }
+                return Ok(Version);
         }
 
 

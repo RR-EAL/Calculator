@@ -69,8 +69,13 @@
 
     internal async Task ControleerVersie()
     {
-        if (traka.GeefVersie() != "2.7.12.0")
-            throw new NotSupportedException("Traka versie onjuist");
+        const string clientVersion = "2.7.";
+        var serverVersion = await traka.GeefVersie();
+
+        if(!serverVersion.StartsWith(clientVersion, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new NotSupportedException($"Traka versie onjuist. s:{serverVersion}, c: {clientVersion}");
+        }
         //Todo
     }
 

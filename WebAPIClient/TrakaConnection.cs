@@ -12,8 +12,8 @@ using WebAPIClient;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    private string baseUrl = "https://eal-trakaweb:10700";
-    //private string baseUrl = "https://localhost:7252";
+    //private string baseUrl = "https://eal-trakaweb:10700";
+    private string baseUrl = "https://localhost:7252";
 
     internal TrakaConnection()
     {
@@ -196,9 +196,12 @@ public class TrakaConnection
         }
     }
 
-    internal string GeefVersie()
+    internal async Task<string> GeefVersie()
     {
-        return "";
+        var httpClient = CreateClient();
+
+        using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/Version");
+        return await response.Content.ReadAsStringAsync();
     }
 
     public record MyTrakaUser
