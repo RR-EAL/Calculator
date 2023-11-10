@@ -18,7 +18,7 @@ namespace TodoApi.Controllers
     {
         public static List<string> authorisations = new List<string>
         {
-            "A88",
+            "X79",
             "Q55"
         };
 
@@ -100,7 +100,9 @@ namespace TodoApi.Controllers
         [HttpGet("Version")] 
         public IActionResult GetVersion()
         {
-                return Ok(Version);
+ 
+
+            return Ok(Version);
         }
 
 
@@ -180,6 +182,27 @@ namespace TodoApi.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+
+
+        [HttpPut("User/foreignKey/{userKey}")]
+        public IActionResult UpdateUser(string userKey, UserRequestModel model)
+        {
+            foreach (var item in authorisations)
+            {
+                if (userKey == item)
+                {
+                    Console.WriteLine("user exits");
+                    return Ok();
+                }
+            }
+            Console.WriteLine($"user {userKey} not found");
+            return NotFound();
+
+
+        }
+
+
+
 
         internal List<string> FindAllAuthorisationsInternal()
         {

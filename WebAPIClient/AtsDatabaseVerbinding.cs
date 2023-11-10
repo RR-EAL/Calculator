@@ -11,7 +11,7 @@ internal class AtsDatabaseVerbinding
         //new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
         //new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
         //new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
-        new AtsSleutelAutorisatie { ForeignKey = "X79", Achternaam = "sjaak2", Voornaam = "henk2", KastNummer="Kantine", SleutelPositie="A12", Pasnummer = 267 },
+        new AtsSleutelAutorisatie { ForeignKey = "X79", Achternaam = "sjaak2", Voornaam = "henk2", KastNummer="Kantine", SleutelPositie="E8A7874F-1110-4E5A-8EDE-DF8FB16E9C95", Pasnummer = 267 },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
@@ -54,5 +54,5 @@ public record AtsSleutelAutorisatie
     public string SleutelPositie { get; set; }
     public DateTime ExpirationDate { get; internal set; }
     public string ForeignKey { get; internal set; }
-    public int Pasnummer { get; internal set; }
+    public uint Pasnummer { get; internal set; }
 }

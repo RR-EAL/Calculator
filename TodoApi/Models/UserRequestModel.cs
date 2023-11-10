@@ -10,8 +10,8 @@ namespace TodoApi.Models
         public string? Forename { get; set; }
         [Required]
         public string? Surname { get; set; }
-        public int? CardId { get; set; }
-        public int? Pin { get; set; }
+        public string? CardId { get; set; }
+        public string? Pin { get; set; }
         public DateTime? PinExpiryDate { get; set; }
         public Boolean? ActiveFlag { get; set; }
         public DateTime? ActiveDate { get; set; }

@@ -35,10 +35,20 @@
 
             if (atsAutorisatie != null)
             {
-                await traka.Update(atsAutorisatie); //Bestaande gebruikers uit bronlijst bijwerken in sleutelkast
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("AtsAutorisatie bijgewerkt in Traka");
-                Console.ResetColor();
+                try
+                {
+                    await traka.Update(atsAutorisatie); //Bestaande gebruikers uit bronlijst bijwerken in sleutelkast
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("AtsAutorisatie bijgewerkt in Traka");
+                    Console.ResetColor();
+                }
+                catch(Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Fout met AtsAutorisatie bijgewerken in Traka");
+                    Console.WriteLine(ex.ToString());
+                    Console.ResetColor();
+                }
             }
             else
             {
@@ -62,14 +72,14 @@
         }
     }
 
-    internal async Task OphalenActueleSleutelStatus()
+    internal async Task OphalenActueleSleutelStatus() // pagina 144 map
     {
         //dit komt later
     }
 
     internal async Task ControleerVersie()
     {
-        const string clientVersion = "2.7.";
+        const string clientVersion = "\"2.18.";
         var serverVersion = await traka.GeefVersie();
 
         if(!serverVersion.StartsWith(clientVersion, StringComparison.OrdinalIgnoreCase))
@@ -87,5 +97,10 @@
             Console.WriteLine(x);
             Console.ResetColor();
         }
+    }
+
+    internal async Task LaatAlleSleutelsInTrakaZien()
+    {
+        await traka.GetItemListAsync("40031");
     }
 }

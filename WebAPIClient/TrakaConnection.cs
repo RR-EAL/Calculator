@@ -12,8 +12,8 @@ using WebAPIClient;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    //private string baseUrl = "https://eal-trakaweb:10700";
-    private string baseUrl = "https://localhost:7252";
+    private string baseUrl = "https://eal-trakaweb:10700";
+    //lprivate string baseUrl = "https://localhost:7252";
 
     internal TrakaConnection()
     {
@@ -27,23 +27,46 @@ public class TrakaConnection
 
     internal async Task Update(AtsSleutelAutorisatie record)
     {
+        bool isNotNew = await CheckIfAUserExists(record.ForeignKey);
+        if (isNotNew)
+        {
+            await PutTrakaUser(record);
+        }
+        else
+        {
+            await PostTrakaUser(record);
+            //Werk voornaam bij : map pagina??..
+        }
+        await AssignNewSetOfPermissionsForSpecifiecUser(record);
+    }
+
+    private async Task PutTrakaUser(AtsSleutelAutorisatie record)
+    {
+        var client = CreateClient();
+        var requestData = new
+        {
+
+            Forename = record.Voornaam,
+            record.ForeignKey,
+            Surname = record.Achternaam,
+            CardId = record.Pasnummer.ToString("000000"),
+        };
+        var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User");
+        request.Content = requestContent; // Set the request content
+
+        request.Content.ReadAsStringAsync();
+
+        HttpResponseMessage response = await client.SendAsync(request);
+
         try
         {
-            bool isNotNew = await CheckIfAUserExists(record.ForeignKey);
-            if (isNotNew)
-            {
-                // update pagina 95;
-            }
-            else
-            {
-                await PostTrakaUser(record);
-                //Werk voornaam bij : map pagina??..
-            }
-            await AssignNewSetOfPermissionsForSpecifiecUser(record);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-
+            throw new NotSupportedException("PutTrakaUser failed", ex);
         }
     }
 
@@ -113,7 +136,7 @@ public class TrakaConnection
             Forename = record.Voornaam,
             record.ForeignKey,
             Surname = record.Achternaam,
-            CardId = record.Pasnummer,
+            CardId = record.Pasnummer.ToString("000000"),
             //Pin = ",
             PinExpire = DateTime.Now,
             ActiveFlag = true,
@@ -125,16 +148,13 @@ public class TrakaConnection
 
         // Create the HTTP request message
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User");
-        request.Content = requestContent; // Set the request content
-
-        request.Content.ReadAsStringAsync();
 
         // Log the request details
         Console.WriteLine("Request:");
         Console.WriteLine($"Method: {request.Method}");
         Console.WriteLine($"URL: {request.RequestUri}");
         Console.WriteLine($"Headers: {string.Join(", ", request.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
-        Console.WriteLine($"Content: {await request.Content.ReadAsStringAsync()}");
+        //Console.WriteLine($"Content: {await request.Content?.ReadAsStringAsync()}");
 
         // Send the HTTP request
         HttpResponseMessage response = await client.SendAsync(request);
@@ -202,6 +222,24 @@ public class TrakaConnection
 
         using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/Version");
         return await response.Content.ReadAsStringAsync();
+    }
+
+
+    internal async Task<string> GetKeyList()
+    {
+        var httpClient = CreateClient();
+
+        using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/Version");
+        return await response.Content.ReadAsStringAsync();
+    }
+
+
+    internal async Task GetItemListAsync(string userKey)
+    {
+        var client = CreateClient();
+
+        using HttpResponseMessage response = await client.GetAsync($"{baseUrl}/Traka/User/foreignKey/{userKey}/ItemAccess");
+        var data = await response.Content.ReadAsStringAsync(); //.ReadFromJsonAsync<List<MyTrakaUser>>();
     }
 
     public record MyTrakaUser
