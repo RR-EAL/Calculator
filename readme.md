@@ -31,5 +31,5 @@ https://www.youtube.com/watch?v=jiKf-9MLm7Y
 9 TrakaConnection.cs invullen en uitzoeken welke aanroepen uit de TrakaMap we nodig hebben
 
 11 Update TrakaUser : Pasnummer wijziging updaten in Traka
-12 AtsGebruiker gebruiker krijgt toegang tot sleutel positie 3, 4 en 5
-13 Ophalen van huidige sleutelstatus
+12 Ophalen van huidige sleutelstatus (ifob)
+13 AtsGebruiker gebruiker krijgt toegang tot sleutel positie 3, 4 en 5

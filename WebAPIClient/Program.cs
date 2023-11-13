@@ -1,14 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using WebAPIClient;
+﻿using WebAPIClient;
 
 static class Program
 {
@@ -27,17 +17,24 @@ static class Program
 
     static async Task UpdateAutorisaties()
     {
-        var ai = new ChatGpt();
-        await ai.ControleerVersie();
-       
+        try
+        {
+            var ai = new ChatGpt();
+            await ai.ControleerVersie();
 
-        await ai.LaatAlleAutorisatiesInTrakaZien();
-        //await ai.LaatAlleSleutelsInTrakaZien();
 
-        await ai.StuurAutorisatiesVanAtsNaarTrakaSleutelkast();
-        //await ai.OpschonenBestaandeAutorisatiesInTrakaSleutelkast();
-        await ai.OphalenActueleSleutelStatus();
+            await ai.LaatAlleAutorisatiesInTrakaZien();
+            //await ai.LaatAlleSleutelsInTrakaZien();
 
-        await ai.LaatAlleAutorisatiesInTrakaZien();
+            await ai.StuurAutorisatiesVanAtsNaarTrakaSleutelkast();
+            //await ai.OpschonenBestaandeAutorisatiesInTrakaSleutelkast();
+            await ai.OphalenActueleSleutelStatus();
+
+            await ai.LaatAlleAutorisatiesInTrakaZien();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("An error occurred: " + ex.Message);
+        }
     }
 }

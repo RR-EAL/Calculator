@@ -1,12 +1,8 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using WebAPIClient;
 
 //Cabinet is een kast en een Fob is een sleutel positie
 public class TrakaConnection
@@ -50,6 +46,8 @@ public class TrakaConnection
             record.ForeignKey,
             Surname = record.Achternaam,
             CardId = record.Pasnummer.ToString("000000"),
+            ActiveDate = DateTime.Now,
+            ExpiryDate = DateTime.Now.AddYears(1)
         };
         var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
 
@@ -97,6 +95,7 @@ public class TrakaConnection
 
         };
 
+        //blz 101
         var requestUrl = $"{baseUrl}/Traka/User/foreignKey/{userKey}/ItemAccess";
         var antwoord = await client.PostAsJsonAsync(requestUrl, requestData);
 
@@ -132,7 +131,7 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
-            
+
             Forename = record.Voornaam,
             record.ForeignKey,
             Surname = record.Achternaam,
@@ -141,40 +140,21 @@ public class TrakaConnection
             PinExpire = DateTime.Now,
             ActiveFlag = true,
             ActiveDate = DateTime.Now,
-            ExpiryDate = DateTime.Now,
+            ExpiryDate = DateTime.Now.AddYears(1),
             Detail = "sdaf",
         };
-        var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
-
         // Create the HTTP request message
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User");
 
-        // Log the request details
-        Console.WriteLine("Request:");
-        Console.WriteLine($"Method: {request.Method}");
-        Console.WriteLine($"URL: {request.RequestUri}");
-        Console.WriteLine($"Headers: {string.Join(", ", request.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
-        //Console.WriteLine($"Content: {await request.Content?.ReadAsStringAsync()}");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User")
+        {
+            Content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json")
+        };
 
         // Send the HTTP request
         HttpResponseMessage response = await client.SendAsync(request);
 
-        // Log the response details
-        Console.WriteLine("Response:");
-        Console.WriteLine($"Status Code: {(int)response.StatusCode} {response.ReasonPhrase}");
-        Console.WriteLine($"Headers: {string.Join(", ", response.Headers.Select(h => $"{h.Key}: {string.Join(", ", h.Value)}"))}");
 
-        if (response.IsSuccessStatusCode)
-        {
-            // Read and log the response content
-            string responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Response Content: {responseContent}");
-        }
-        else
-        {
-            // Log an error message for non-successful responses
-            Console.WriteLine($"Error: {response.StatusCode}");
-        }
+        response.EnsureSuccessStatusCode();
     }
 
     static bool ServerCertificateCustomValidation(HttpRequestMessage requestMessage, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors sslErrors)

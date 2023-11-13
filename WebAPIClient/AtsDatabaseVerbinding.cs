@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-internal class AtsDatabaseVerbinding
+﻿internal class AtsDatabaseVerbinding
 {
     public AtsDatabaseVerbinding()
     {
@@ -11,7 +9,16 @@ internal class AtsDatabaseVerbinding
         //new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
         //new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
         //new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
-        new AtsSleutelAutorisatie { ForeignKey = "X79", Achternaam = "sjaak2", Voornaam = "henk2", KastNummer="Kantine", SleutelPositie="E8A7874F-1110-4E5A-8EDE-DF8FB16E9C95", Pasnummer = 267 },
+        new AtsSleutelAutorisatie
+        {
+            ForeignKey = "X99",
+            Achternaam = "sjaak2", Voornaam = "henk2",
+            KastNummer="Kantine", //mag mischien weg?
+            SleutelPositie="BEB8C045-B36B-40D5-ACE5-6626376BF0D4",
+            Pasnummer = 59,
+            StartTime = DateTime.Now.Date,
+            ExpirationTime = DateTime.Now.Date.AddDays(7)
+        },
     };
 
     internal IEnumerable<AtsSleutelAutorisatie> ZoekPashouders(int page, int pageSize)
@@ -42,7 +49,7 @@ internal class AtsDatabaseVerbinding
     private bool CheckAuthorizationValidity(AtsSleutelAutorisatie authorization)
     {
 
-        return DateTime.Now < authorization.ExpirationDate;
+        return DateTime.Now < authorization.ExpirationTime;
     }
 }
 
@@ -52,7 +59,8 @@ public record AtsSleutelAutorisatie
     public string Voornaam { get; set; }
     public string KastNummer { get; set; }
     public string SleutelPositie { get; set; }
-    public DateTime ExpirationDate { get; internal set; }
+    public DateTime StartTime { get; set; }
+    public DateTime ExpirationTime { get; set; }
     public string ForeignKey { get; internal set; }
     public uint Pasnummer { get; internal set; }
 }

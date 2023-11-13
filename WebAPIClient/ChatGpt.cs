@@ -14,9 +14,22 @@
         var pageSize = 10;
         var page = 1;
         var pashouders = atsVerbinding.ZoekPashouders(page, pageSize);
-        foreach (var p in pashouders)
+        foreach (var atsAutorisatie in pashouders)
         {
-            await traka.Update(p);
+            try
+            {
+                await traka.Update(atsAutorisatie); //Bestaande gebruikers uit bronlijst bijwerken in sleutelkast
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("AtsAutorisatie bijgewerkt in Traka");
+                Console.ResetColor();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Fout met autorisatie bijgewerken in Traka: " + atsAutorisatie);
+                Console.WriteLine(ex.ToString());
+                Console.ResetColor();
+            }
         }
     }
 
@@ -42,7 +55,7 @@
                     Console.WriteLine("AtsAutorisatie bijgewerkt in Traka");
                     Console.ResetColor();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Fout met AtsAutorisatie bijgewerken in Traka");
@@ -74,6 +87,7 @@
 
     internal async Task OphalenActueleSleutelStatus() // pagina 144 map
     {
+        /// /ifob blz:58
         //dit komt later
     }
 
@@ -82,7 +96,7 @@
         const string clientVersion = "\"2.18.";
         var serverVersion = await traka.GeefVersie();
 
-        if(!serverVersion.StartsWith(clientVersion, StringComparison.OrdinalIgnoreCase))
+        if (!serverVersion.StartsWith(clientVersion, StringComparison.OrdinalIgnoreCase))
         {
             throw new NotSupportedException($"Traka versie onjuist. s:{serverVersion}, c: {clientVersion}");
         }
@@ -91,7 +105,7 @@
 
     internal async Task LaatAlleAutorisatiesInTrakaZien()
     {
-        foreach(var x in await traka.GetListAsync(1, 1000))
+        foreach (var x in await traka.GetListAsync(1, 1000))
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(x);
