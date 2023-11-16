@@ -19,7 +19,8 @@ namespace TodoApi.Controllers
         public static List<string> authorisations = new List<string>
         {
             "X79",
-            "Q55"
+            "Q55",
+            "X99"
         };
 
         [HttpPost("User")]
@@ -105,6 +106,34 @@ namespace TodoApi.Controllers
             return Ok(Version);
         }
 
+        [HttpGet("iFob/page/{page}/pageSize/{pageSize}")]
+        public IEnumerable <FobResponseModel> GetiFobList(int page, int pageSize)
+        {
+            var List = new List<FobResponseModel>();
+            List.Add(new FobResponseModel
+            {
+                PrimaryKey = Guid.NewGuid().ToString(),
+                CurrentPosition = 13,
+                HomeSystemPrimaryKey = "Kast 1",
+                HomePosition = 13,
+                Status = 6,
+                Description = "Blauwe Ferrari",
+                CurrentUserForeignKey = null,
+            });
+            List.Add(new FobResponseModel
+            {
+                PrimaryKey = Guid.NewGuid().ToString(),
+                CurrentPosition = 15,
+                HomeSystemPrimaryKey = "Kast 1",
+                HomePosition = 12,
+                Status = 2,
+                Description = "Gele Ferrari",
+                CurrentUserForeignKey = authorisations.First(),
+            });
+            return List;
+
+        }
+
 
 
         [HttpHead("User/foreignKey/{userKey}")]
@@ -156,6 +185,7 @@ namespace TodoApi.Controllers
                         ForeignKey = item,
                         PrimaryKey = item,
                         Forename = "Joe",
+                        
                     });
 
                     if (items.Count >= pageSize)

@@ -12,10 +12,10 @@
         new AtsSleutelAutorisatie
         {
             ForeignKey = "X99",
-            Achternaam = "sjaak2", Voornaam = "henk2",
+            Achternaam = "Rutgers", Voornaam = "Ravi",
             KastNummer="Kantine", //mag mischien weg?
-            SleutelPositie="BEB8C045-B36B-40D5-ACE5-6626376BF0D4",
-            Pasnummer = 59,
+            SleutelPositie= "BEB8C045-B36B-40D5-ACE5-6626376BF0D4",
+            Pasnummer = 267,
             StartTime = DateTime.Now.Date,
             ExpirationTime = DateTime.Now.Date.AddDays(7)
         },
@@ -59,6 +59,7 @@ public record AtsSleutelAutorisatie
     public string Voornaam { get; set; }
     public string KastNummer { get; set; }
     public string SleutelPositie { get; set; }
+    //public List<string> SleutelPosities { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime ExpirationTime { get; set; }
     public string ForeignKey { get; internal set; }

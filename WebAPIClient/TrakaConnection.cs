@@ -8,8 +8,9 @@ using System.Text.Json;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    private string baseUrl = "https://eal-trakaweb:10700";
-    //lprivate string baseUrl = "https://localhost:7252";
+    //private string baseUrl = "https://eal-trakaweb:10700";
+    private string baseUrl = "https://localhost:7252";
+    
 
     internal TrakaConnection()
     {
@@ -51,7 +52,7 @@ public class TrakaConnection
         };
         var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
 
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, $"{baseUrl}/Traka/User");
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, $"{baseUrl}/Traka/User/ForeignKey/{record.ForeignKey}");
         request.Content = requestContent; // Set the request content
 
         request.Content.ReadAsStringAsync();
@@ -218,8 +219,16 @@ public class TrakaConnection
     {
         var client = CreateClient();
 
-        using HttpResponseMessage response = await client.GetAsync($"{baseUrl}/Traka/User/foreignKey/{userKey}/ItemAccess");
+        using HttpResponseMessage response = await client.GetAsync($"{baseUrl}/Traka/user/foreignKey/{userKey}/ItemAccess");
         var data = await response.Content.ReadAsStringAsync(); //.ReadFromJsonAsync<List<MyTrakaUser>>();
+    }
+
+    internal async Task<IEnumerable<object>> GetFobStatusAsync(int page, int pageSize)
+    {
+        var httpClient = CreateClient();
+
+        using HttpResponseMessage response = await httpClient.GetAsync($"{baseUrl}/Traka/ifob/page/{page}/pageSize/{pageSize}");
+        return await response.Content.ReadFromJsonAsync<List<MyFobStatus>>();
     }
 
     public record MyTrakaUser

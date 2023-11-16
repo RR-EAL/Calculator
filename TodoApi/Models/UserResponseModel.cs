@@ -10,5 +10,6 @@ namespace TodoApi.Models
         [Required]
         public string? Forename { get; set; }
         public string? Surname { get; set; }
+        public string? CardId { get; set; }
     }
 }

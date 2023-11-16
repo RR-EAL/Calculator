@@ -87,13 +87,17 @@
 
     internal async Task OphalenActueleSleutelStatus() // pagina 144 map
     {
-        /// /ifob blz:58
-        //dit komt later
+        foreach (var x in await traka.GetFobStatusAsync(1, 1000))
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(x);
+            Console.ResetColor();
+        }
     }
 
     internal async Task ControleerVersie()
     {
-        const string clientVersion = "\"2.18.";
+        const string clientVersion = "\"2.18";
         var serverVersion = await traka.GeefVersie();
 
         if (!serverVersion.StartsWith(clientVersion, StringComparison.OrdinalIgnoreCase))
