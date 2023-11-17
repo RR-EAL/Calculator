@@ -92,7 +92,7 @@ public class TrakaConnection
         // Prepare the request data if you have one (e.g., for a POST request)
         var requestData = new
         {
-            ItemIds = new List<string> { record.SleutelPositie },
+            ItemIds = record.SleutelPosities
 
         };
 
