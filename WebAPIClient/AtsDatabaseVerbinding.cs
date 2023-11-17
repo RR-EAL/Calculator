@@ -24,7 +24,7 @@
             ForeignKey = "X99",
             Achternaam = "Rutgers", Voornaam = "Ravi",
             KastNummer="Kantine", //mag mischien weg?
-            SleutelPositie= "BEB8C045-B36B-40D5-ACE5-6626376BF0D4",
+            SleutelPosities = new List<string> { "BEB8C045-B36B-40D5-ACE5-6626376BF0D4", "QEB8C045-B36B-40D5-ACE5-6626376BF0D4" },
             Pasnummer = 267,
             StartTime = DateTime.Now.Date,
             ExpirationTime = DateTime.Now.Date.AddDays(7)

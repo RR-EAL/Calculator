@@ -90,16 +90,9 @@ public class TrakaConnection
         HttpClient client = CreateClient();
 
         // Prepare the request data if you have one (e.g., for a POST request)
-        var itemIds = new List<string>();
-        if (record.SleutelPositie != null)
-        {
-            itemIds.Add(record.SleutelPositie);
-        }
-
-
         var requestData = new
         {
-            ItemIds = itemIds,
+            ItemIds = record.SleutelPosities
 
         };
 
