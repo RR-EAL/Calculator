@@ -6,9 +6,19 @@
 
     public List<AtsSleutelAutorisatie> SleutelAutorisaties { get; internal set; } = new()
     {
-        //new AtsSleutelAutorisatie { ForeignKey = "B55", Achternaam = "van den Hoek", Voornaam = "Rene", KastNummer="Kantine", SleutelPositie="A10", ExpirationDate = DateTime.Now.AddDays(7) },
+        
         //new AtsSleutelAutorisatie { ForeignKey = "A88", Achternaam = "Rutgers", Voornaam = "Ravi", KastNummer="Kantine", SleutelPositie="A14", ExpirationDate = DateTime.Now.AddDays(7) },
         //new AtsSleutelAutorisatie { ForeignKey = "V89", Achternaam = "Rutgers", Voornaam = "Jeroen", KastNummer="Kantine", SleutelPositie="A15" },
+        new AtsSleutelAutorisatie
+        {
+            ForeignKey = "X79",
+            Achternaam = "Rutgers", Voornaam = "Ravi",
+            KastNummer="Kantine", //mag mischien weg?
+            SleutelPositie= null,
+            Pasnummer = 79,
+            StartTime = DateTime.Now.Date,
+            ExpirationTime = DateTime.Now.Date.AddDays(7)
+        },
         new AtsSleutelAutorisatie
         {
             ForeignKey = "X99",

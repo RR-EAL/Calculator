@@ -8,9 +8,9 @@ using System.Text.Json;
 public class TrakaConnection
 {
     private HttpClient httpClient;
-    //private string baseUrl = "https://eal-trakaweb:10700";
-    private string baseUrl = "https://localhost:7252";
-    
+    private string baseUrl = "https://eal-trakaweb:10700";
+    //private string baseUrl = "https://localhost:7252";
+
 
     internal TrakaConnection()
     {
@@ -90,9 +90,16 @@ public class TrakaConnection
         HttpClient client = CreateClient();
 
         // Prepare the request data if you have one (e.g., for a POST request)
+        var itemIds = new List<string>();
+        if (record.SleutelPositie != null)
+        {
+            itemIds.Add(record.SleutelPositie);
+        }
+
+
         var requestData = new
         {
-            ItemIds = new List<string> { record.SleutelPositie },
+            ItemIds = itemIds,
 
         };
 
